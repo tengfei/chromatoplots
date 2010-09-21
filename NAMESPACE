@@ -1,0 +1,42 @@
+import(rggobi, RGtk2, cairoDevice, ggplot2, xcms, commandr, IRanges)
+
+importClassesFrom(Biobase, ExpressionSet, AnnotatedDataFrame)
+importFrom(Biobase, copyEnv)
+
+## just for now
+exportPattern("^[^\\.]")
+
+## main data structures
+exportClasses("cpExperiment", "cpPeaks", "cpSample")
+
+## stuff from commandr
+export(explore, widget, perform, pipeline)
+
+## stuff from xcms
+export(findPeaks)
+
+## pipeline stuff
+
+exportClasses("PipelineORlanguage", "ProtoFillPeaks",
+              "ProtoFillPeaksExtract", "ProtoFindComps",
+              "ProtoFindCompsSigma", "ProtoFindPeaks",
+              "ProtoFindPeaksCentWave", "ProtoFindPeaksGauss",
+               "ProtoFindPeaksMatchedFilter",
+              "ProtoFindPeaksPipeline", "ProtoGenProfile",
+              "ProtoGenProfileIntbin", "ProtoGroupComps",
+              "ProtoGroupCompsAngle", "ProtoGroupCompsDensity",
+              "ProtoIdentifyCompounds", "ProtoLoadExperiment",
+              "ProtoLoadExperimentXcms", "ProtoLoadSample",
+              "ProtoLoadSampleXcms", "ProtoNormalize",
+              "ProtoNormalizeScale", "ProtoRemoveBaseline",
+              "ProtoRemoveBaselineMedian", "ProtoRemoveBaselineRbe",
+              "ProtoRtcor", "ProtoRtcorRloess", "ProtoRtcorSmooth",
+              "ProtoSummarize", "ProtoSummarizeCommon",
+              "StageFillPeaks", "StageFindComps", "StageFindPeaks",
+              "StageGenProfile", "StageGroupComps",
+              "StageIdentifyCompounds", "StageLoadExperiment",
+              "StageLoadSample", "StageNormalize",
+              "StageRemoveBaseline", "StageRtcor", "StageSummarize",
+              "characterORlanguage", "data.frameORNULL",
+              "data.frameORNULLORlanguage", "logicalORlanguage",
+              "numericORlanguage", "ProtoFindPeaksParabola")

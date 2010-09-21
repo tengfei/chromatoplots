@@ -1,0 +1,174 @@
+
+R version 2.10.1 (2009-12-14)
+Copyright (C) 2009 The R Foundation for Statistical Computing
+ISBN 3-900051-07-0
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+  Natural language support but running in an English locale
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+> .help.ESS <- help
+> options(STERM='iESS', editor='emacsclient')
+> library(chromatoplots)
+Loading required package: ggplot2
+Loading required package: proto
+Loading required package: grid
+Loading required package: reshape
+Loading required package: plyr
+
+Attaching package: 'ggplot2'
+
+
+	The following object(s) are masked from package:grid :
+
+	 nullGrob 
+
+Error in dyn.load(file, DLLpath = DLLpath, ...) : 
+  unable to load shared library '/home/biomedbox/R/x86_64-pc-linux-gnu-library/2.10/xcms/libs/xcms.so':
+  libnetcdf.so.4: cannot open shared object file: No such file or directory
+Error: package/namespace load failed for 'chromatoplots'
+> library(xcms)
+Error in dyn.load(file, DLLpath = DLLpath, ...) : 
+  unable to load shared library '/home/biomedbox/R/x86_64-pc-linux-gnu-library/2.10/xcms/libs/xcms.so':
+  libnetcdf.so.4: cannot open shared object file: No such file or directory
+Error: package/namespace load failed for 'xcms'
+> library(IRanges)
+
+Attaching package: 'IRanges'
+
+
+	The following object(s) are masked from package:plyr :
+
+	 reduce 
+
+
+	The following object(s) are masked from package:base :
+
+	 cbind,
+	 Map,
+	 mapply,
+	 order,
+	 pmax,
+	 pmax.int,
+	 pmin,
+	 pmin.int,
+	 rbind,
+	 rep.int,
+	 table 
+
+> library(commandr)
+
+Attaching package: 'commandr'
+
+
+	The following object(s) are masked from package:utils :
+
+	 prompt 
+
+> library(Biobase)
+
+Welcome to Bioconductor
+
+  Vignettes contain introductory material. To view, type
+  'openVignette()'. To cite Bioconductor, see
+  'citation("Biobase")' and for packages 'citation(pkgname)'.
+
+
+Attaching package: 'Biobase'
+
+
+	The following object(s) are masked from package:IRanges :
+
+	 updateObject 
+
+
+	The following object(s) are masked from package:plyr :
+
+	 dims 
+
+> library(ggplot2)
+> library(RGtk2)
+> library(cairoDevice)
+> library(rggobi)
+Warning message:
+package 'rggobi' was built under R version 2.9.0 and help may not work correctly 
+> 
+> source("~/Prolang/svn/repos/trunk/chromatoplots/R/cplot.R")
+> source("~/Prolang/svn/repos/trunk/chromatoplots/R/cpExperiment-class.R")
+Error in reconcilePropertiesAndPrototype(name, slots, prototype, superClasses,  : 
+  No definition was found for superclass "xcmsSet" in the specification of class "cpExperiment" 
+> source("~/Prolang/svn/repos/trunk/chromatoplots/R/simul.R")
+> library(chromatoplots)
+
+Attaching package: 'chromatoplots'
+
+
+	The following object(s) are masked _by_ .GlobalEnv :
+
+	 cplotPeaks,
+	 cplotPeaks2,
+	 cplotResult,
+	 cplotRT,
+	 cplotRtFit,
+	 cplotSpec,
+	 cplotTIC,
+	 input_quantity,
+	 interSpec 
+
+
+	The following object(s) are masked from package:plyr :
+
+	 summarize 
+
+Warning messages:
+1: replacing previous import ‘eval’ when loading ‘IRanges’ 
+2: replacing previous import ‘Position’ when loading ‘IRanges’ 
+3: replacing previous import ‘rev’ when loading ‘IRanges’ 
+> library(xcms)
+
+Attaching package: 'xcms'
+
+
+	The following object(s) are masked from package:Biobase :
+
+	 phenoData,
+	 phenoData<- 
+
+> library(IRanges)
+> library(commandr)
+> library(Biobase)
+> library(ggplot2)
+> library(RGtk2)
+> library(cairoDevice)
+> library(rggobi)
+> 
+> source("~/Prolang/svn/repos/trunk/chromatoplots/R/cplot.R")
+> source("~/Prolang/svn/repos/trunk/chromatoplots/R/cpExperiment-class.R")
+> source("~/Prolang/svn/repos/trunk/chromatoplots/R/simul.R")
+> file <- "~/Prolang/R/data/raw/s2/M0201A.CDF"
+> raw <- xcmsRaw(file)
+Error in readChar(filename, 1024) : invalid UTF-8 input in readChar()
+> raw <- loadSample(file)
+Error in readChar(filename, 1024) : invalid UTF-8 input in readChar()
+> raw <- xcmsRaw(file)
+Error in readChar(filename, 1024) : invalid UTF-8 input in readChar()
+> raw <- loadSample(file)
+Error in readChar(filename, 1024) : invalid UTF-8 input in readChar()
+> raw <- xcmsRaw(file)
+Error in readChar(filename, 1024) : invalid UTF-8 input in readChar()
+> file <- "~/Prolang/R/data/raw/s2/M0201A.CDF"
+> raw <- xcmsRaw(file)
+Error in readChar(filename, 1024) : invalid UTF-8 input in readChar()
+> source("http://bioconductor.org/biocLite.R")
+> ?biocLite
+> 
