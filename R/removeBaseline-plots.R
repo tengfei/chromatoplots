@@ -1,53 +1,21 @@
 setMethod("explore", c("cpSample", protocolClass("removeBaseline")),
-          function(object, protocol, raw, mz)
+          function(object, protocol, raw,geom='l')
           {
-            gg_vbox <- gg_baseline_box(object,raw=raw)
+            gg_vbox <- gg_baseline_box(object,raw=raw,geom=geom)
             stack_plots("Baseline Subtraction",
               list(gg_vbox),
               )
          
           })
 
-baseplot <- function(object, protocol, raw, mz, subtract = TRUE)
-{
-  ## FIXME: replace the code with faster qtpaint function
-  time <- raw@scantime
-  mzmin <- raw@mzrange[1]
-  rawint <- raw@env$profile[mz-mzmin+1,]
-  chrom <- data.frame(time = time, intensity = rawint)
-  #p <- qplot(time,rawint,data=chrom,geom="point")
-  #p$title=NULL
-  corint <- object@env$profile[mz-mzmin+1,]
-  if (subtract) {
-    res <- corint
-    fit <- rawint - corint
-  } else {
-    res <- rawint - corint
-    fit <- corint
-  }
-  #p_chrom_fit <- p + geom_line(aes(x = time, y = fit),colour = "gray50")
-  #print(p_chrom_fit)
-  ylim=range(rawint)
-  par(mfrow=c(2,1),mar=c(2,2,1,1))
-  plot(time,rawint,ylab='intensity',pch=20,ylim=ylim)
-  lines(time,fit,col='gray50')
-  plot(time,res,ylab='residuals',pch=20,ylim=ylim)
- 
-  ## stack_plots(paste("Baseline Subtraction  ","(MZ = ",mz,")  "),
-  ##             list(p_chrom_fit,p_chrom_res),
-  ##             weights=c(1,1))
-  
-}
-
-
 ## gg_baseline_box to contain the ggobi device
-gg_baseline_box <- function(object,raw,gg=ggobi(),...){
+gg_baseline_box <- function(object,raw,gg=ggobi(),geom=geom){
   base_da <- gtkDrawingArea()
   asCairoDevice(base_da)
   dev <- -1
   gSignalConnect(base_da,'realize',function(wid) dev<<-dev.cur())
   dev_fun <- function() dev
-  gg <- gg_baseline(object,raw,gg=gg,dev=dev_fun)
+  gg <- gg_baseline(object,raw,gg=gg,dev=dev_fun,geom=geom)
   disp <- display(gg[1],embed=TRUE)
   variables(disp) <- list(X='mz')
   imode(disp) <- "Identify"
@@ -58,7 +26,7 @@ gg_baseline_box <- function(object,raw,gg=ggobi(),...){
 }
 
 
-gg_baseline <- function(object,raw,gg=ggobi(),dev=dev.new()){
+gg_baseline <- function(object,raw,gg=ggobi(),dev=dev.new(),geom=geom){
   mz_range <- object@mzrange
   mz_range <- mz_range[1]:mz_range[2]
   mz_range <- as.data.frame(mz_range)
@@ -76,23 +44,42 @@ gg_baseline <- function(object,raw,gg=ggobi(),dev=dev.new()){
       dev.set(dev())
     else dev.set(dev)
     if(id>-1) mz <- mz_range$mz[id+1]
-    baseplot(object, raw=raw, mz=mz, subtract = TRUE)
-   # baseplot_res()
+    baseplot(object, raw=raw, mz=mz, subtract = TRUE,geom=geom)
   })
-
   gg
 }
 
-## cplotViewBL by ggplot2 used for plotting single slice at certain mz
-cplotViewBL <- function(raw,mz,ylim=NULL){
+
+baseplot <- function(object,raw, mz, subtract = TRUE,geom=geom)
+{
+  ## FIXME: replace the code with faster qtpaint function
   time <- raw@scantime
   mzmin <- raw@mzrange[1]
   rawint <- raw@env$profile[mz-mzmin+1,]
-  if(is.null(ylim)) ylim <- range(rawint)
   chrom <- data.frame(time = time, intensity = rawint)
-  p <- qplot(time,rawint,data=chrom,geom="point")+opts(title=paste('Mz=',mz))+scale_y_continuous(limits=ylim)
-  print(p)
+  #p <- qplot(time,rawint,data=chrom,geom="point")
+  #p$title=NULL
+  corint <- object@env$profile[mz-mzmin+1,]
+  if (subtract) {
+    res <- corint
+    fit <- rawint - corint
+  } else {
+    res <- rawint - corint
+    fit <- corint
+  }
+  ylim=range(rawint)
+  par(mfrow=c(2,1),mar=c(2,2,1,1))
+  plot(time,rawint,ylab='intensity',pch=20,ylim=ylim,type=geom)
+  lines(time,fit,col='gray50')
+  plot(time,res,ylab='residuals',pch=20,ylim=ylim,type=geom)
 }
+
+## cplot by ggplot2 used for plotting single slice at certain mz
+setMethod('cplot',c("cpSample", protocolClass("removeBaseline")),
+          function(obj,protocol,raw,mz,ylim=NULL,geom=c('p','l')){
+  baseplot(obj,raw=raw,mz=mz,geom=geom)
+})
+
 
 
 

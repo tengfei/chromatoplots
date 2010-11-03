@@ -1,7 +1,7 @@
 Package: chromatoplots
 Title: Preprocessing of GC-MS metabolomics data with a GUI and interactive plots.
 Version: 0.0.8
-Author: Michael Lawrence, Heike Hofmann, Suh-yeon Choi, Dianne Cook
+Author: Michael Lawrence, Tengfei Yin, Heike Hofmann, Suh-yeon Choi, Dianne Cook
 Depends: ggplot2
 Imports: methods, rggobi, RGtk2, cairoDevice, Biobase, IRanges
 Enhances: xcms, commandr
@@ -11,7 +11,51 @@ Description: Provides a GUI-driven extensible pipeline-based framework for the
   The default pipeline is designed for GC-MS metabolomics data, but most 
   routines are likely applicable to other types of data. The pipeline may be 
   controlled from the command line or the GUI.
-Maintainer: Michael Lawrence <mflawren@fhcrc.org>
+Maintainer: Tengfei Yin <yintengfei@gmail.com>
 License: Artistic-2.0
-URL: http://croc.vrac.iastate.edu/chromatoplots
 biocViews: Visualization,MassSpectrometry
+	   collate: load-pipes.R        
+	   load-plots.R       
+	   cpSample-class.R      
+	   cpPeaks-class.R       
+	   cpExperiment-class.R  
+	   all-utils.R           
+	   canonical.R           
+	   onestep.R
+	   genProfile-pipes.R  
+	   genProfile-plots.R  
+	   removeBaseline-alg.R
+	   removeBaseline-pipes.R
+	   removeBaseline-plots.R
+	   findPeaks-alg.R       
+	   findPeaks-pipes.R   
+	   findPeaks-plots.R   
+	   findComps-alg.R       
+	   findComps-pipes.R     
+	   findComps-plots.R     
+	   groupComps-alg.R    
+	   groupComps-pipes.R  
+	   groupComps-plots.R  
+	   rtcor-alg.R
+	   rtcor-pipes.R
+	   rtcor-plots.R
+	   summarize-alg.R
+	   summarize-pipes.R
+	   summarize-plots.R
+	   normalize-alg.R     
+	   normalize-pipes.R
+	   normalize-plots.R
+	   fillPeaks-pipes.R     
+	   filtComps-alg.R       
+	   identify-pipes.R    
+	   filtPeaks.R           
+	   deconvolution.R       
+	   gutter.R            
+	   output.R
+	   cplot.R               
+	   graphics.R          
+	   extra.R               
+	   gui.R
+	   postprocessing.R               
+	   zzz.R
+	   command-utils.R       

@@ -1,3 +1,74 @@
+## profile image, chromatogram with cutoff, and the GGobi visualization
+setMethod("explore", c("cpPeaks", protocolClass("findPeaks")),
+          function(object, protocol, raw, sample=NULL, residuals = TRUE, island=TRUE, gg = ggobi(),
+                   dev = dev.cur())
+          {
+            
+            ## FIXME: Use qt later, the profile image
+            ## p_prof <- image(raw)
+            ## the chromatogram
+            
+            prof <- raw@env$profile
+            quant <- quantile(prof, protocol@alpha, na.rm = TRUE)
+            ## p_chrom_max <- cplotPeaks(object,raw,mz)
+            peak_hbox <- gg_peaks_box(object, raw=raw,
+                                      cutoff=matrix(quant, nrow(prof), ncol(prof)),
+                                      sample=sample,
+                                      residuals=residuals,island=island)
+            stack <- stack_plots(paste("Peak Detection"),
+                                 list(peak_hbox))
+            stack
+          })
+          
+gg_peaks_box <- function(object, raw, cutoff, sample=NULL ,residuals = TRUE,island=TRUE, gg=ggobi(), ...)
+{
+  ## the GGobi peak visualization
+  peak_da <- gtkDrawingArea()
+  asCairoDevice(peak_da)
+  ## lazily determine device ID after realization
+  dev <- -1
+  gSignalConnect(peak_da, "realize", function(wid) dev <<- dev.cur())
+  dev_fun <- function() dev
+  
+### FIXME: how to pass the device to gg_peaks?
+  gg <- gg_peaks(object,raw,cutoff,sample,residuals,island,gg,dev_fun)
+  disp <- display(gg[1], embed = TRUE)
+  variables(disp) <- list(X = "rt", Y = "mz")
+  imode(disp) <- "Identify"
+  vbox <- gtkVBox()
+  peak_hbox <- gtkHBox()
+  peak_hbox$add(disp)
+  peak_hbox$add(peak_da)
+  peak_hbox
+}
+
+## the infamous GGobi/R peak visualization
+gg_peaks <- function(object, raw, cutoff, sample=NULL,residuals = TRUE, island=TRUE, gg = ggobi(),dev = dev.new())
+{
+  if(!is.null(sample))
+    peaks <- object@peaks[object@peaks[,'sample']==sample,]
+  else
+    peaks <- object@.Data
+  peaks_df <- as.data.frame(peaks)
+  rownames(peaks_df) <- seq_len(nrow(peaks_df))
+  gg["peaks"] <- peaks_df
+  d <- gg["peaks"]
+  
+  gSignalConnect(gg, "identify-point", function(gg, plot, id, dataset) {
+    if (id == -1)
+      return()
+    if (!(as.RGtkObject(d) == dataset))
+      return()
+    if (is.function(dev))
+      dev.set(dev())
+    else dev.set(dev)
+    plot_peak(object,id=id+1,raw=raw, cutoff=cutoff, sample=sample,residuals=residuals,island=island)
+  })
+
+  gg
+}
+
+
 plot_peak <- function(object,id, raw, cutoff, sample=NULL,residuals = FALSE,island=FALSE)
 {
   if(!is.null(sample)){
@@ -36,88 +107,6 @@ plot_peak <- function(object,id, raw, cutoff, sample=NULL,residuals = FALSE,isla
   if(island)   cplotPeaks2(object,raw,mz)
 }
 
-## the infamous GGobi/R peak visualization
-gg_peaks <- function(object, raw, cutoff, sample=NULL,residuals = TRUE, island=TRUE, gg = ggobi(),dev = dev.new())
-{
-  
-  if(!is.null(sample))
-    peaks <- object@peaks[object@peaks[,'sample']==sample,]
-  else
-    peaks <- object@.Data
-  peaks_df <- as.data.frame(peaks)
-  rownames(peaks_df) <- seq_len(nrow(peaks_df))
-  gg["peaks"] <- peaks_df
-  d <- gg["peaks"]
-  
-  gSignalConnect(gg, "identify-point", function(gg, plot, id, dataset) {
-    if (id == -1)
-      return()
-    if (!(as.RGtkObject(d) == dataset))
-      return()
-    if (is.function(dev))
-      dev.set(dev())
-    else dev.set(dev)
-    plot_peak(object,id=id+1,raw=raw, cutoff=cutoff, sample=sample,residuals=residuals,island=island)
-  })
-
-  gg
-}
-
-gg_peaks_box <- function(object, raw, cutoff, sample=NULL ,residuals = TRUE,island=TRUE, gg=ggobi(), ...)
-{
-  ## the GGobi peak visualization
-  
-  
-  peak_da <- gtkDrawingArea()
-  asCairoDevice(peak_da)
-
-  ## lazily determine device ID after realization
-  dev <- -1
-  gSignalConnect(peak_da, "realize", function(wid) dev <<- dev.cur())
-  dev_fun <- function() dev
-  
-### FIXME: how to pass the device to gg_peaks?
-  gg <- gg_peaks(object,raw,cutoff,sample,residuals,island,gg,dev_fun)
-  disp <- display(gg[1], embed = TRUE)
-  variables(disp) <- list(X = "rt", Y = "mz")
-  imode(disp) <- "Identify"
-  vbox <- gtkVBox()
-  peak_hbox <- gtkHBox()
-  peak_hbox$add(disp)
-  peak_hbox$add(peak_da)
-  peak_hbox
-}
-
-## profile image, chromatogram with cutoff, and the GGobi visualization
-setMethod("explore", c("cpPeaks", "ProtoFindPeaksGauss"),
-          function(object, protocol, raw, sample=NULL, residuals = TRUE, island=TRUE, gg = ggobi(),
-                   dev = dev.cur())
-          {
-            
-            ## FIXME: Use qt later, the profile image
-            ## p_prof <- image(raw)
-            ## the chromatogram
-            
-            prof <- raw@env$profile
-            quant <- quantile(prof, protocol@alpha, na.rm = TRUE)
-            ## p_chrom_max <- cplotPeaks(object,raw,mz)
-            peak_hbox <- gg_peaks_box(object, raw=raw,
-                                      cutoff=matrix(quant, nrow(prof), ncol(prof)),
-                                      sample=sample,
-                                      residuals=residuals,island=island)
-            
-            
-
-
-            stack <- stack_plots(paste("Peak Detection"),
-                                 list(peak_hbox))
-            ## build the visualization
-            ## stack <- stack_plots(paste("Peak Detection  ","(MZ = ",mz,")  "),
-            ##                                  list(p_prof, p_chrom_max, peak_hbox))
-
-            stack
-          })
-
 setMethod("explore", c("cpPeaks", "ProtoFindPeaksParabola"),
           function(object, protocol, raw, sample=NULL, residuals = TRUE, island=TRUE, gg = ggobi(),
                    dev = dev.cur())
@@ -134,10 +123,6 @@ setMethod("explore", c("cpPeaks", "ProtoFindPeaksParabola"),
                                       cutoff=matrix(quant, nrow(prof), ncol(prof)),
                                       sample=sample,
                                       residuals=residuals,island=island)
-            
-            
-
-
             stack <- stack_plots(paste("Peak Detection"),
                                  list(peak_hbox))
             ## build the visualization
@@ -146,6 +131,8 @@ setMethod("explore", c("cpPeaks", "ProtoFindPeaksParabola"),
 
             stack
           })
+
+
 
 
 ######################################################################

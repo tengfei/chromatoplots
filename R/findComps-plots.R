@@ -110,12 +110,19 @@ gg_all_comps_disp <- function(comps, gg = ggobi())
   gg_comp_chain
 }
 
-plot_comp <- function(peaks, mz_range)
-{
+## using ggplot2
+## plot_comp <- function(peaks, mz_range)
+## {
+##   df <- data.frame(x = peaks[,"mz"], xend = peaks[,"mz"], y = peaks[,"maxf"], yend = 0)
+##   print(ggplot(df) + geom_segment(aes(x = x, xend = xend, y = y, yend = yend)) +
+##         scale_y_continuous("relative intensity") + scale_x_continuous("mz", limits=mz_range))
+## }
+plot_comp <- function(peaks,mz_range){
   df <- data.frame(x = peaks[,"mz"], xend = peaks[,"mz"], y = peaks[,"maxf"], yend = 0)
-  print(ggplot(df) + geom_segment(aes(x = x, xend = xend, y = y, yend = yend)) +
-        scale_y_continuous("relative intensity") + scale_x_continuous("mz", limits=mz_range))
+  with(df,plot(xend,y,type='h',xlab='mz',ylab='relative intensity',xlim=mz_range))
 }
+
+
 
 
 

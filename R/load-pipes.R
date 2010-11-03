@@ -8,6 +8,7 @@ setProtocol("xcms", "From file via xcms",
               cpSample(object, profstep = 0, includeMSn = includeMSn)
             }, "loadSample")
 
+
 setStage("loadExperiment", "Load experiment", "character", "cpExperiment")
 
 setClassUnion("data.frameORNULL", c("data.frame", "NULL"))
@@ -23,3 +24,4 @@ setProtocol("xcms", "From file(s) via xcms",
               cpExperiment(object, phenoData = phenoData,
                            method = "pipeline", pipeline = peakpipe)
             }, "loadExperiment")
+

@@ -36,8 +36,15 @@ findPeaks.pipeline <- function(data, pipeline = Protocol("findPeaks"))
 {
   perform(pipeline, data)
 }
+
 setProtocol("pipeline", "Via Pipeline", representation(pipeline = "Pipeline"),
             findPeaks.pipeline, "findPeaks")
+
 setMethod("findPeaks.pipeline", "xcmsRaw", function(object, ...) {
   findPeaks.pipeline(as(object, "cpSample"), ...)
 })
+
+## transform from xcmsRaw to cpSample
+##setAs('xcmsRaw','cpSample')
+
+

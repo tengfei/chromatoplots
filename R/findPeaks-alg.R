@@ -7,7 +7,9 @@ findPeaks.gauss <- function(object, alpha = 0.99, egh = TRUE) {
   fits <- apply(prof, 1, fit_profile, object@scantime, quant, egh)
   fits_flat <- unlist(fits, F)
   mz <- rep(profMz(object), sapply(fits, length))
-  fits_to_peaks(fits_flat, mz)
+  pks <- fits_to_peaks(fits_flat, mz)
+  if(nrow(pks)==0) cat('No peaks are found, please adjust your parameters\n')
+  pks
 }
 
 descendMin <- function(y, istart = which.max(y)) {
@@ -208,8 +210,10 @@ fits_to_peaks <- function(fits, masses = NULL)
   ##    peaks[,"ret.mu"] > object@scantime[peaks[,"retmax"]]
   ##  peaks[!flat,]
   ## get rid of the 'bad' fit peaks and 'flat' peaks
-  bad <- peaks[,'rt']<peaks[,'rtmin']|peaks[,'rt']>peaks[,'rtmax']|peaks[,'sigma']>2.5
-  peaks <- peaks[!bad,]
+  ## bad <- peaks[,'rt']<peaks[,'rtmin']|peaks[,'rt']>peaks[,'rtmax']|abs(peaks[,'sigma'])<=sigma.cutoff
+  ## cat(length(bad),'\n')
+  ## cat(nrow(peaks),'\n')
+  ## peaks <- peaks[!bad,]
   new("cpPeaks", peaks)
 }
 
@@ -220,14 +224,12 @@ fits_to_peaks <- function(fits, masses = NULL)
 
 findPeaks.parabola <- function(object) {
   raw <- object
-  
   ## the white noise is assumed to have a poisson distribution
   ## if the noise is significant, we can approximate the poisson with the normal
   ## we then estimate sigma from the MAD (sigma = 1.4826*MAD)
   ## (could become an estimateNoise protocol)
   prof <- raw@env$profile
   mad_prof <- xcms::medianFilter(abs(prof), mrad = 0, nrad = 100)
-
   ## Filter out maxima that are piggybacking on peaks. With small peaks
   ## or the flat tails of large peaks, noise can cause the detection of
   ## spurious maxima, as the values are similar and above the noise
@@ -254,7 +256,7 @@ findPeaks.parabola <- function(object) {
   ## give 6X.
 
   rleProf <- function(x) Rle(as.integer(t(cbind(x, NA))))
-  
+
   series <- rleProf(raw_prof@env$profile)
   cor_series <- rleProf(prof)
   mad_series <- rleProf(mad_prof)
@@ -407,7 +409,7 @@ findPeaks.parabola <- function(object) {
 
   ## filter out obviously bad fits
   ## "upside down" or 'mu' estimated outside of fitted domain
-  peaks <- peaks[c < 0 & mu <= fit_t[fit_t_i + width(fit_r) - 1] + fit_t_off &
-                 mu >= fit_t[fit_t_i] + fit_t_off,]
+  ## peaks <- peaks[c < 0 & mu <= fit_t[fit_t_i + width(fit_r) - 1] + fit_t_off &
+  ##                mu >= fit_t[fit_t_i] + fit_t_off,]
   new("cpPeaks", peaks)
 }

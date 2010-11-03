@@ -48,7 +48,7 @@ cplotRT <- function(object,xscale=NULL,geom=c("line","heatmap"),sample=NULL,log=
   sample=sample.names[sample]
 ##  raw <- getData("loadSample")
 ##  if(is.null(raw)){
-  lockDataMode()
+  getOption("BioC")$commandr$data_mode
     for(i in 1:length(path)){
       raw <- loadSample(path[i])
       tic[[i]] <- raw@tic

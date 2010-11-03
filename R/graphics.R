@@ -1,3 +1,14 @@
+setGeneric('cplot',function(obj,protocol,...) standardGeneric('cplot'))
+
+setMethod('cplot',c('PipelineData','missing'),
+          function(obj,protocol,...){
+            proto <- NULL
+            if(length(obj@pipeline@.Data))
+              proto <- tail(obj@pipeline,1)[[1]]
+            cplot(obj,proto,...)
+          })
+
+
 ### GENERAL/SHARED GRAPHICS UTILITIES
 assignments_to_edges <- function(assignments) {
   do.call("rbind", lapply(unique(assignments[!is.na(assignments)]), 
@@ -6,18 +17,6 @@ assignments_to_edges <- function(assignments) {
                             g <- which(assignments == assignment)
                             cbind(g[-length(g)], g[-1])
                           }))
-}
-
-plot_image <- function(data,x)
-{
-  xlim <- range(x@scantime)
-  ylim <- x@mzrange
-  zlim <- c(0,log(max(x@env$intensity)))
-  p <- ggplot(data, aes(x = time, y = mz, fill = log(intensity))) + geom_tile()
-  p <- p + scale_fill_gradient(limits=zlim,low = "yellow", high = "black")+
-    opts(legend.position="none")
-  p <- p+scale_x_continuous(limits=xlim)+scale_y_continuous(limits=ylim)
-  p
 }
 
 stack_plots <- function(title, plots, weights = rep(1, length(plots)))

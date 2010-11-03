@@ -1,4 +1,4 @@
-removeBaseline.median <- function(object, mzrad = 0, scanrad = 0) {
+removeBaseline.median <- function(object, mzrad = 0, scanrad = 100) {
   object@env <- copyEnv(object@env)
   prof <- object@env$profile
   profMedFilt(object, mzrad, scanrad)
@@ -9,8 +9,11 @@ removeBaseline.median <- function(object, mzrad = 0, scanrad = 0) {
 removeBaseline.rbe <- function(object, span = 0.15, runs = 3, b = 3,
                                progress = NULL) 
 {
-  rbe(object, attr(object, "proftime"), progress, span = span,
-      runs = runs, b = b)$fitted
+  object@env <- copyEnv(object@env)
+  subj <- rbe(object, attr(object, "proftime"), progress, span = span,
+      runs = runs, b = b)
+  object@env$profile <- subj
+  object
 }
 
 ## rbe method
@@ -18,7 +21,6 @@ rbe <- function(object, time =NULL, progress = NULL, ...)
 {
   prof <- object@env$profile
   time <- seq_len(ncol(prof))
-  print(class(time))
   ## returns residuals for all points from loess fit only fit to 'scans'
   fit_rbe_to_mass <- function(mass)
     {

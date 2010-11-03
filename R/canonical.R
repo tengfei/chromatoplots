@@ -1,5 +1,7 @@
 ### Constructors for canonical pipelines
 
 LoadPeaksPipeline <- function()
-  Pipeline(Protocol("loadSample"), Protocol("genProfile"),
+  Pipeline(Protocol("loadSample"),
+           Protocol("genProfile"),
+           Protocol("removeBaseline"),
            Protocol("findPeaks"))
