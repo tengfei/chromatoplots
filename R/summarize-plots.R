@@ -57,7 +57,6 @@ setMethod("explore", c("xcmsSet", "ProtoSummarize"),
                              glyph_color(spectra_d) <- 1
                              glyph_color(spectra_d)[id+1] <- 9
                            })
-
             stack_plots("Summarization",
                         list(result_hbox, gg_result, gg_comp_peaks))
           })

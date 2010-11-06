@@ -2,7 +2,6 @@ setMethod("explore", c("xcmsSet", protocolClass("rtcor")),
           function(object, protocol, raw=NULL,
                    xscale=NULL,geom=c("line","heatmap"),sample=NULL,log=FALSE,gg = ggobi()) {
             if(is.null(raw)){
-              if(is.null(getData("findComps"))){
                 message('Raw data after finding components and before retention time correction is missing,\n
 data neet to be regenerated again(maybe time-consuming),\n
 are you sure you want to reprocess these data?')
@@ -14,8 +13,6 @@ are you sure you want to reprocess these data?')
                   raw <- perform(rawpipeline,rawfiles[sample])
                 }else{
                   return()
-                }}else{
-                  raw <- getData("findComps")
                 }
             }
             ## raw <- perform(processProto(object@pipeline,'findComps'),
@@ -48,7 +45,7 @@ cplotRT <- function(object,xscale=NULL,geom=c("line","heatmap"),sample=NULL,log=
   sample=sample.names[sample]
 ##  raw <- getData("loadSample")
 ##  if(is.null(raw)){
-  lockDataMode()
+  getOption("BioC")$commandr$data_mode
     for(i in 1:length(path)){
       raw <- loadSample(path[i])
       tic[[i]] <- raw@tic
