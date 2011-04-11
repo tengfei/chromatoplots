@@ -81,6 +81,7 @@ componentize_peaks <- function(peaks, tolerance = 1)
   assignments
 }
 
+
 ### Far slower than initial implementation
 componentize_peaks2 <- function(peaks, tolerance = 1) {
   mu <- peaks[,"rt"]
@@ -128,7 +129,8 @@ components_to_assignments2 <- function(components, peaks, tolerance = 1) {
 ##  ol <- as.matrix(overlap(ir, as.integer(mu_peak*1000)))
   ir <- IRanges((mu_peak - tolerance*sigma)*1000,
                 (mu_peak + tolerance*sigma)*1000)
-  ol <- as.matrix(overlap(ir, as.integer(mu*1000)))
+  ## ol <- as.matrix(overlap(ir, as.integer(mu*1000)))
+  ol <- findOverlaps(as.integer(mu*1000),ir)@matchMatrix
   ## if comp contains peaks from same mz, only keep closest peak
   mu_delta <- abs(mu_peak[ol[,2]] - mu[ol[,1]])
   ol <- ol[order(mu_delta),]
@@ -140,23 +142,23 @@ components_to_assignments2 <- function(components, peaks, tolerance = 1) {
   as.integer(factor(comps))
 }
 
-components_to_assignments <- function(components, peaks, tolerance = 1) {
-  assignments <- rep(NA, nrow(peaks))
-  by(cbind(peaks, ind = seq_len(nrow(peaks))), peaks[,"mz"], function(m) {
-    d <- abs(outer(m[,"rt"], components[,"rt"], "-"))
-    sigma <- matrix(components[,"sigma"],nrow=nrow(d),ncol=ncol(d),byrow=T)
-    d[d > abs(sigma)*tolerance] <- NA
-    d_col <- col(d)
-    d_row <- row(d)
-    replicate(nrow(d), {
-      closest <- which.min(d)
-      d[,d_col[closest]] <<- NA
-      d[d_row[closest],] <<- NA
-      assignments[m[d_row[closest],"ind"]] <<- d_col[closest]
-    })
-  })
-  assignments
-}
+## components_to_assignments <- function(components, peaks, tolerance = 1) {
+##   assignments <- rep(NA, nrow(peaks))
+##   by(cbind(peaks, ind = seq_len(nrow(peaks))), peaks[,"mz"], function(m) {
+##     d <- abs(outer(m[,"rt"], components[,"rt"], "-"))
+##     sigma <- matrix(components[,"sigma"],nrow=nrow(d),ncol=ncol(d),byrow=T)
+##     d[d > abs(sigma)*tolerance] <- NA
+##     d_col <- col(d)
+##     d_row <- row(d)
+##     replicate(nrow(d), {
+##       closest <- which.min(d)
+##       d[,d_col[closest]] <<- NA
+##       d[d_row[closest],] <<- NA
+##       assignments[m[d_row[closest],"ind"]] <<- d_col[closest]
+##     })
+##   })
+##   assignments
+## }
 
 ## 2X over initial version, but already fast
 assignments_to_components2 <- function(assignments, peaks) {

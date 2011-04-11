@@ -137,11 +137,6 @@ explore(xset_sum)
 # possibly normalize (by simple scaling)
 xset_norm <- normalize(xset_sum, "scale")
 
-# again, explore
-explore(xset_norm)
-
-## diagnostic without explorase
-
 # extract expressionSet and pass to explorase
 library(explorase)
 explorase(as(xset_norm, "ExpressionSet"))

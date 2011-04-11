@@ -1,5 +1,4 @@
 import(rggobi, RGtk2, cairoDevice, ggplot2, xcms, commandr, IRanges)
-
 importClassesFrom(Biobase, ExpressionSet, AnnotatedDataFrame)
 importFrom(Biobase, copyEnv)
 
@@ -16,7 +15,6 @@ export(explore, widget, perform, pipeline)
 export(findPeaks)
 
 ## pipeline stuff
-
 exportClasses("PipelineORlanguage", "ProtoFillPeaks",
               "ProtoFillPeaksExtract", "ProtoFindComps",
               "ProtoFindCompsSigma", "ProtoFindPeaks",
