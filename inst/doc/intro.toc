@@ -1,5 +1,0 @@
-\contentsline {section}{\numberline {1}Introduction}{3}
-\contentsline {section}{\numberline {2}Installation}{3}
-\contentsline {section}{\numberline {3}Workflow}{3}
-\contentsline {subsection}{\numberline {3.1}Arrange Your File}{3}
-\contentsline {subsection}{\numberline {3.2}Raw Data Input}{5}
