@@ -14,7 +14,7 @@ Description: Provides a GUI-driven extensible pipeline-based framework for the
 Maintainer: Tengfei Yin <yintengfei@gmail.com>
 License: Artistic-2.0
 biocViews: Visualization,MassSpectrometry
-	   collate: load-pipes.R        
+collate: load-pipes.R        
 	   load-plots.R       
 	   cpSample-class.R      
 	   cpPeaks-class.R       

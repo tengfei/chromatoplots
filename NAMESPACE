@@ -1,15 +1,16 @@
-import(rggobi, RGtk2, cairoDevice, ggplot2, xcms, commandr, IRanges)
+import(rggobi, RGtk2, cairoDevice, ggplot2, xcms, commandr)
+## IRanges)
 importClassesFrom(Biobase, ExpressionSet, AnnotatedDataFrame)
 importFrom(Biobase, copyEnv)
 
 ## just for now
-exportPattern("^[^\\.]")
+## exportPattern("^[^\\.]")
 
 ## main data structures
 exportClasses("cpExperiment", "cpPeaks", "cpSample")
 
 ## stuff from commandr
-export(explore, widget, perform, pipeline)
+export(explore, perform, pipeline)
 
 ## stuff from xcms
 export(findPeaks)
