@@ -3,8 +3,7 @@ Title: Preprocessing of GC-MS metabolomics data with a GUI and interactive plots
 Version: 0.0.8
 Author: Michael Lawrence, Tengfei Yin, Heike Hofmann, Suh-yeon Choi, Dianne Cook
 Depends: methods, commandr
-Imports: rggobi, RGtk2, cairoDevice, Biobase, IRanges
-Enhances: xcms 
+Imports: rggobi, RGtk2, cairoDevice, Biobase, IRanges, xcms, ggplot2
 Description: Provides a GUI-driven extensible pipeline-based framework for the	 
   preprocessing of chromatography - mass spectrometry data with a strong
   emphasis on the use of interactive graphics for algorithm diagnostics. 

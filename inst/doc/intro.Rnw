@@ -131,6 +131,7 @@ the following command, and generate \emph{profile
   matrix}\footnote[1]{Profile matrix has a row for each mass and a
   column for each scan, in order of time.}.
 
+
 % \begin{verbatim}
 % > file <- "raw/s1/M0101A.CDF"
 % > raw <- loadSample(file)

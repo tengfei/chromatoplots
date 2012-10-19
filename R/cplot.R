@@ -102,8 +102,6 @@ cplotResult <- function(object,id.diff=NULL,id.common=NULL,group.name=F){
 ######################################################################
 
 finalObj <- function(object,tic.cutoff,npeaks.cutoff,dist.cutoff,rt_window){
-  require(chromatoplots)
-  require(Biobase)
   xset_comps_filt <- findComps(object,"sigma_filt",tic.cutoff=tic.cutoff,npeaks.cutoff=npeaks.cutoff)
   xset_groups <- groupComps(xset_comps_filt, "angle",dist.cutoff=dist.cutoff,rt_window=rt_window)
   xset_sum <- summarize(xset_groups, "common")
@@ -111,56 +109,53 @@ finalObj <- function(object,tic.cutoff,npeaks.cutoff,dist.cutoff,rt_window){
   xset_norm
 }
 
-getPvalue <- function(object){
-  require(limma)
-  final <- as(object,"ExpressionSet")
-  design <- final@phenoData@data
-  df <- exprs(final)
-  design <- model.matrix(~class,data=design)
-  fit <- lmFit(df,design)
-  fit <- eBayes(fit)
-  df <- cbind(df,pvalue=fit$p.value[,2])
-  df <- as.data.frame(df)
-  df
-}
+## getPvalue <- function(object){
+##   require(limma)
+##   final <- as(object,"ExpressionSet")
+##   design <- final@phenoData@data
+##   df <- exprs(final)
+##   design <- model.matrix(~class,data=design)
+##   fit <- lmFit(df,design)
+##   fit <- eBayes(fit)
+##   df <- cbind(df,pvalue=fit$p.value[,2])
+##   df <- as.data.frame(df)
+##   df
+## }
 
 
 ## dir <- "~/Desktop/data/"
 ## cplotPvalue(dir,xlim=c(1,20))
-
-
-cplotPvalue <- function(dir,xlim=NA,output=NA){
-  require(animation)
-  if(is.na(output)){
-    ani.options(nmax = length(list.files(dir))+1)
-  }else{
-    ani.options(nmax = length(list.files(dir))+1,outdir=output)
-  }
-  ani.start()
-  for(nm in list.files(dir)){
-    file <- file.path(dir,nm)
-    df <- read.csv(file,header=T)
-    df <- df[order(df$pvalue),]
-    df2 <- apply(df[,1:8],1,sum)
-    summ <- sort(df2,decreasing=T)
-    if(is.na(xlim)) xlim=c(1,nrow(df))
-    xrange=c(min(xlim),min(nrow(df),max(xlim)))
-    par(mfrow=c(2,1),mar=c(4,2,1,1))
-    plot(df$pvalue,type='l',col="blue",xlim=xlim,ylab="p-value",
-         ylim=range(df$pvalue[min(xrange):max(xrange)]))
-    abline(v=seq(min(xlim),max(xlim),by=round(diff(xlim)/10)),
-           lty="dotted",col="lightgray")
-    mtext(nm,side=3,line=-6,cex=3,col="gray")
-    plot(summ,type="l",col="red",xlim=xlim,ylab="Sum for each row",
-         ylim=range(summ[min(xrange):max(xrange)]))
-    abline(v=seq(min(xlim),max(xlim),by=round(diff(xlim)/10)),lty="dotted",col="lightgray")
-    mtext(nm,side=3,line=-6,cex=3,col="gray")
-  }
-  ani.stop()
-}
+## cplotPvalue <- function(dir,xlim=NA,output=NA){
+##   require(animation)
+##   if(is.na(output)){
+##     ani.options(nmax = length(list.files(dir))+1)
+##   }else{
+##     ani.options(nmax = length(list.files(dir))+1,outdir=output)
+##   }
+##   ani.start()
+##   for(nm in list.files(dir)){
+##     file <- file.path(dir,nm)
+##     df <- read.csv(file,header=T)
+##     df <- df[order(df$pvalue),]
+##     df2 <- apply(df[,1:8],1,sum)
+##     summ <- sort(df2,decreasing=T)
+##     if(is.na(xlim)) xlim=c(1,nrow(df))
+##     xrange=c(min(xlim),min(nrow(df),max(xlim)))
+##     par(mfrow=c(2,1),mar=c(4,2,1,1))
+##     plot(df$pvalue,type='l',col="blue",xlim=xlim,ylab="p-value",
+##          ylim=range(df$pvalue[min(xrange):max(xrange)]))
+##     abline(v=seq(min(xlim),max(xlim),by=round(diff(xlim)/10)),
+##            lty="dotted",col="lightgray")
+##     mtext(nm,side=3,line=-6,cex=3,col="gray")
+##     plot(summ,type="l",col="red",xlim=xlim,ylab="Sum for each row",
+##          ylim=range(summ[min(xrange):max(xrange)]))
+##     abline(v=seq(min(xlim),max(xlim),by=round(diff(xlim)/10)),lty="dotted",col="lightgray")
+##     mtext(nm,side=3,line=-6,cex=3,col="gray")
+##   }
+##   ani.stop()
+## }
 
 cplotHist <- function(dir){
-  require(ggplot2)
   t <- numeric()
   for(nm in list.files(dir)){
     file <- file.path(dir,nm)
@@ -175,7 +170,6 @@ cplotHist <- function(dir){
 
 ## plot sigma_d vs sigma_t
 cplotDt <- function(object){
-  require(ggplot2)
   group <- as.data.frame(object@groups)
   p <- ggplot(data=group,aes(x=sigma_t,y=sigma_d))+geom_point()
   p
@@ -228,7 +222,6 @@ topCommon <- function(object,scale=NULL,method="diff"){
 }
 
 cplotTotalP <- function(dir,method="diff",xscale=NA){
-  require(ggplot2)
   final <- data.frame()
   if(method=="diff"){
     for(nm in list.files(dir)){

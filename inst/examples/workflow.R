@@ -1,8 +1,6 @@
-library(commandr)
 library(chromatoplots)
 cdfpath <- system.file('cdf',package='faahKO')
 cdffiles <- list.files(cdfpath,recursive=TRUE,full.names=TRUE)
-
 getOption('BioC')$commandr
 
 ## options(warn=0)
@@ -21,7 +19,7 @@ cor_prof <- removeBaseline(raw_prof, "median", scanrad = 100)
 ## getOption('BioC')
 ## explore the correction
 
-## explore(cor_prof, raw = raw_prof,geom='l')
+explore(cor_prof, raw = raw_prof,geom='l')
 ## ## default is 'l', because line is faster
 ## cplot(cor_prof,raw=raw_prof,mz=201,geom='p')
 
@@ -61,7 +59,7 @@ identical(pipes0,pipes1)
 rep_raw0 <- perform(pipes1,rep_file)
 
 ## explore it, make sure it's OK like the other rep
-## explore(rep_raw,raw=rep_raw0)
+explore(rep_raw,raw=rep_raw0)
 
 ## find its peaks in the same way
 rep_peaks <- perform(findPeaksProto(peaks), rep_raw)

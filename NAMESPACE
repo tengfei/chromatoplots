@@ -10,7 +10,11 @@ importFrom(Biobase, copyEnv)
 exportClasses("cpExperiment", "cpPeaks", "cpSample")
 
 ## stuff from commandr
+
 export(explore, perform, pipeline)
+exportMethods(loadSample, genProfile, loadExperiment,
+              findPeaks, findComps, groupComps, rtcor,
+              fillPeaks, normalize, summarize, removeBaseline)
 
 ## stuff from xcms
 export(findPeaks)
