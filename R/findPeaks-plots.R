@@ -9,18 +9,25 @@ setMethod("explore", c("cpPeaks", protocolClass("findPeaks")),
             ## the chromatogram
             
             prof <- raw@env$profile
-            quant <- quantile(prof, protocol@alpha, na.rm = TRUE)
+            if("alpha" %in% slotNames(protocol)){
+              quant <- quantile(prof, protocol@alpha, na.rm = TRUE)
             ## p_chrom_max <- cplotPeaks(object,raw,mz)
             peak_hbox <- gg_peaks_box(object, raw=raw,
                                       cutoff=matrix(quant, nrow(prof), ncol(prof)),
                                       sample=sample,
                                       residuals=residuals,island=island)
+            }else{
+              peak_hbox <- gg_peaks_box(object, raw=raw,
+                                        sample=sample,
+                                        residuals=residuals,island=island)
+            }
+            close(displays(ggobi_get(1))[[1]])
             stack <- stack_plots(paste("Peak Detection"),
                                  list(peak_hbox))
             stack
           })
           
-gg_peaks_box <- function(object, raw, cutoff, sample=NULL ,residuals = TRUE,island=TRUE, gg=ggobi(), ...)
+gg_peaks_box <- function(object, raw, cutoff = NULL, sample=NULL ,residuals = TRUE,island=TRUE, gg=ggobi(), ...)
 {
   ## the GGobi peak visualization
   peak_da <- gtkDrawingArea()
@@ -30,7 +37,7 @@ gg_peaks_box <- function(object, raw, cutoff, sample=NULL ,residuals = TRUE,isla
   gSignalConnect(peak_da, "realize", function(wid) dev <<- dev.cur())
   dev_fun <- function() dev
   
-### FIXME: how to pass the device to gg_peaks?
+  ### FIXME: how to pass the device to gg_peaks?
   gg <- gg_peaks(object,raw,cutoff,sample,residuals,island,gg,dev_fun)
   disp <- display(gg[1], embed = TRUE)
   variables(disp) <- list(X = "rt", Y = "mz")
@@ -43,12 +50,13 @@ gg_peaks_box <- function(object, raw, cutoff, sample=NULL ,residuals = TRUE,isla
 }
 
 ## the infamous GGobi/R peak visualization
-gg_peaks <- function(object, raw, cutoff, sample=NULL,residuals = TRUE, island=TRUE, gg = ggobi(),dev = dev.new())
+gg_peaks <- function(object, raw, cutoff = NULL, sample=NULL,residuals = TRUE, island=TRUE, gg = ggobi(),dev = dev.new())
 {
   if(!is.null(sample))
     peaks <- object@peaks[object@peaks[,'sample']==sample,]
   else
     peaks <- object@.Data
+  str(object)
   peaks_df <- as.data.frame(peaks)
   rownames(peaks_df) <- seq_len(nrow(peaks_df))
   gg["peaks"] <- peaks_df
@@ -62,14 +70,15 @@ gg_peaks <- function(object, raw, cutoff, sample=NULL,residuals = TRUE, island=T
     if (is.function(dev))
       dev.set(dev())
     else dev.set(dev)
-    plot_peak(object,id=id+1,raw=raw, cutoff=cutoff, sample=sample,residuals=residuals,island=island)
+    plot_peak(object,id=id+1,raw=raw, cutoff= cutoff, sample=sample,residuals=residuals,island=island)
   })
 
   gg
 }
 
 
-plot_peak <- function(object,id, raw, cutoff, sample=NULL,residuals = FALSE,island=FALSE)
+
+plot_peak <- function(object,id, raw, cutoff = NULL, sample=NULL,residuals = FALSE,island=FALSE)
 {
   if(!is.null(sample)){
     peaks <- object@peaks[object@peaks[,'sample']==sample,]
@@ -83,8 +92,8 @@ plot_peak <- function(object,id, raw, cutoff, sample=NULL,residuals = FALSE,isla
   mz <- peak['mz']
   df <- as.data.frame(peak)
   y <- prof[range$massidx, range$scanidx]
-
-  cutoff <- cutoff[range$massidx, range$scanidx]
+  if(length(cutoff))
+    cutoff <- cutoff[range$massidx, range$scanidx]
   x <- raw@scantime[range$scanidx]
   fitted <- egh(x, peak["rt"], peak["maxf"], peak["sigma"], peak["tau"])
   ymax <- max(y,peak['maxf'])
@@ -94,7 +103,8 @@ plot_peak <- function(object,id, raw, cutoff, sample=NULL,residuals = FALSE,isla
     par(mfrow=c(3,1),mar=rep(3,4),oma=c(5,5,4,1),mgp=c(2,1,0))
   plot(x, y, xlab = "time", ylab = "intensity",ylim=c(0,ymax))
   lines(x, fitted, col = "red", lwd = 2)
-  lines(x, cutoff, col = "blue")
+  if(length(cutoff))
+    lines(x, cutoff, col = "blue")
   points(peak['rt'],peak['maxf'],col="blue",pch=19,cex=1.5)
   if (residuals)
     {

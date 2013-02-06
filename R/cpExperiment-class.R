@@ -1,6 +1,25 @@
 setClass("cpExperiment", representation(comps = "matrix"),
          contains = c("PipelineData", "xcmsSet"))
-
+##' \code{cpExperiment} class exntends class \code{xcmsSet} and
+##' \code{PipelineData}, used to construct \code{cpExperiment} object.
+##'
+##' It import LC/GC-MS files and passed to \code{xcmsSet} then attacha pipeline
+##' to the returned object.
+##' @title cosntructor for cpExperiment object
+##' @aliases cpExperiment cpExperiment-class 
+##' @param files path names of the NetCDF/mzXML files to read
+##' @param snames sample names
+##' @param sclass sample classes
+##' @param phenoData sample names and classes
+##' @param profmethod method to use for profile generation
+##' @param profparam parameters to use for profile generation
+##' @param nSlaves number of slaves/cores to be used for parallel peak
+##' detection.  MPI is used if installed, otherwise the snow package is employed
+##' for multicore support.
+##' @param ... passed to function \code{xcmsSet} function.
+##' @return a \code{cpExperiment} object.
+##' @author Michael Lawrence, Tengfei Yin
+##' @export cpExperiment cpExperiement-class
 cpExperiment <- function(files = NULL, snames = NULL, sclass = NULL,
                          phenoData = NULL, profmethod = "bin",
                          profparam = list(), nSlaves = 0, ...)

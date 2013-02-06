@@ -34,8 +34,8 @@ stack_plots <- function(title, plots, weights = rep(1, length(plots)))
       wid <- gtkDrawingArea()
     else # ggobi plot
       wid <- plot
-    wid$showAll()
     vbox$add(wid)
+    wid$showAll()
     wid$setSizeRequest(-1, sizes[i])
     if (inherits(plot, "ggplot")) {
       asCairoDevice(wid)

@@ -17,6 +17,18 @@ setProtocol("matchedFilter", "Matched Filter",
                            index = "logical"),
             getMethodLocal("findPeaks.matchedFilter", "xcmsRaw"), "findPeaks")
 
+
+## makeLocal <- function(..., outType){
+##   obj <- getMethodLocal(...)
+##   N <- length(body(obj))
+## }
+
+## hack
+findPeaks.centWave.cp <- getMethodLocal("findPeaks.centWave", "xcmsRaw")
+N <- length(body(findPeaks.centWave.cp))
+body(findPeaks.centWave.cp)[N] <- substitute(invisible(new("cpPeaks", new("xcmsPeaks", pr)))())
+
+
 setProtocol("centWave", "Centroid Wavelet",
             representation(scanrange="numeric", minEntries="numeric",
                            dev="numeric", snthresh="numeric",
@@ -26,7 +38,7 @@ setProtocol("centWave", "Centroid Wavelet",
                            scRangeTol="numeric", maxDescOutlier="numeric",
                            mzdiff="numeric", rtdiff="numeric",
                            integrate="numeric", fitgauss = "logical"),
-            getMethodLocal("findPeaks.centWave", "xcmsRaw"), "findPeaks")
+            findPeaks.centWave.cp, "findPeaks")
 
 ## setProtocol("MS1", "Load MS1 Precursor Peaks", representation(),
 ##            getMethodLocal("findPeaks.MS1", "xcmsRaw"), "findPeaks")

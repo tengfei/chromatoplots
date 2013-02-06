@@ -1,11 +1,22 @@
-### Data loading stages
-
+##' load samples
+##'
+##' load LC/GC-MS sample
+##' @title load LC/GC-MS sample
+##' @aliases loadSample-method
+##' @author Michael Lawerence
 setStage("loadSample", "Load sample", "character", "cpSample")
 
 setProtocol("xcms", "From file via xcms",
             representation(includeMSn = "logical"),
-            function(object, includeMSn = FALSE) {
-              cpSample(object, profstep = 0, includeMSn = includeMSn)
+            function(object, profstep = 1, profmethod = "intlin",
+                     profparam = list(), includeMSn = FALSE,
+                     mslevel = NULL, scanrange = NULL) {
+              cpSample(object, profstep = profstep,
+                       profmethod = profmethod,
+                       profparam = profparam,
+                       includeMSn = includeMSn,
+                       mslevel = mslevel,
+                       scanrange = scanrange)
             }, "loadSample")
 
 

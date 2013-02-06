@@ -2,6 +2,7 @@ setMethod("explore", c("cpSample", protocolClass("removeBaseline")),
           function(object, protocol, raw,geom='l')
           {
             gg_vbox <- gg_baseline_box(object,raw=raw,geom=geom)
+            close(displays(ggobi_get(1))[[1]])
             stack_plots("Baseline Subtraction",
               list(gg_vbox),
               )
