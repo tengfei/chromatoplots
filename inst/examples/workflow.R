@@ -4,22 +4,30 @@ cdffiles <- list.files(cdfpath,recursive=TRUE,full.names=TRUE)
 getOption('BioC')$commandr
 
 ## options(warn=0)
+## Stage load sample
 raw1 <- loadSample(cdffiles[1])
-## rawMat(raw1)
-## FIXME: too long, maybe export to a graphic file
+## class(raw1)
+## pipeline(raw1)
 ## explore(raw1)
+
+## library(xcms)
+## Stage generate profile matrix
 raw_prof <- genProfile(raw1)
+## class(raw_prof)
 ## explore(raw_prof)
+## debug(chromatoplots:::gg_baseline_box)
+## undebug(chromatoplots:::gg_baseline)
+## undebug(chromatoplots:::stack_plots)
+
 ## baseline subtraction using sliding window median smoother
 cor_prof <- removeBaseline(raw_prof, "median", scanrad = 100)
 ##  Slow and need to be fixed
 ## cor_prof2 <- removeBaseline(raw_prof, "rbe")
 ## other baseline removement method
 
-## getOption('BioC')
-## explore the correction
+## explore(cor_prof, raw = raw_prof)
+## explore(cor_prof, raw = raw_prof, geom = "p")
 
-explore(cor_prof, raw = raw_prof,geom='l')
 ## ## default is 'l', because line is faster
 ## cplot(cor_prof,raw=raw_prof,mz=201,geom='p')
 
@@ -28,14 +36,21 @@ raw <- cor_prof
 ## find some peaks using our gaussian-fitting method
 ## peaks <- findPeaks(raw, "gauss")
 ## find some peaks using our parabola-fitting method
-## peaks <- findPeaks(raw, "parabola")
+peaks <- findPeaks(raw, "parabola")
 
 ## xcms has method like
 ## $findPeaks.methods
 ## [1] "centWave"      "matchedFilter" "MS1"           "MSW"          
 ## [5] "pipeline"      "islands"      
 peaks <- findPeaks(raw, "gauss")        #slow
+peaks <- findPeaks(raw, "centWave")        #slow
+class(peaks)
+undebug(chromatoplots:::gg_peaks_box)
+undebug(chromatoplots:::gg_peaks)
+explore(peaks, raw = raw)
 pipeline(peaks)
+plotPeaks(raw1, peaks[1:2, ])
+peaks[1, ]
 ## peaks2 <- findPeaks(raw, "parabola")
 ## got a bug for xcms method
 ## peaks3 <- findPeaks(raw, "centWave")
@@ -69,7 +84,7 @@ rep_peaks <- perform(findPeaksProto(peaks), rep_raw)
 ## explore(rep_peaks, raw = rep_raw)
 
 ## load all CI/Control reps at once into one experiment
-##ci_exp <- loadExperiment("CI/Control", pipeline = pipeline(peaks))
+## ci_exp <- loadExperiment("CI/Control", pipeline = pipeline(peaks))
 ## or LD Control and Const
 setwd(cdfpath)
 ## ci_exp <- loadExperiment(c("WT", "KO"),pipeline = pipeline(peaks))

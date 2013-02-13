@@ -2,6 +2,7 @@ import(rggobi, RGtk2, cairoDevice, ggplot2, xcms, commandr)
 ## IRanges)
 importClassesFrom(Biobase, ExpressionSet, AnnotatedDataFrame)
 importFrom(Biobase, copyEnv)
+importMethodsFrom(IRanges, Rle)
 
 ## just for now
 ## exportPattern("^[^\\.]")
