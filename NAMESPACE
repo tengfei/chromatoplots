@@ -1,4 +1,4 @@
-import(rggobi, RGtk2, cairoDevice, ggplot2, xcms, commandr)
+import(xcms, commandr)
 ## IRanges)
 importClassesFrom(Biobase, ExpressionSet, AnnotatedDataFrame)
 importFrom(Biobase, copyEnv)

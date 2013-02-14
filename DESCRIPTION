@@ -3,7 +3,7 @@ Title: Preprocessing of GC-MS metabolomics data with a GUI and interactive plots
 Version: 0.0.8
 Author: Michael Lawrence, Tengfei Yin, Heike Hofmann, Suh-yeon Choi, Dianne Cook
 Depends: methods, commandr
-Imports: rggobi, RGtk2, cairoDevice, Biobase, IRanges, xcms, ggplot2
+Imports: Biobase, IRanges, xcms
 Description: Provides a GUI-driven extensible pipeline-based framework for the	 
   preprocessing of chromatography - mass spectrometry data with a strong
   emphasis on the use of interactive graphics for algorithm diagnostics. 
@@ -15,7 +15,6 @@ License: Artistic-2.0
 biocViews: Visualization,MassSpectrometry
 collate: chromatoplots-package.r
 	 load-pipes.R        
-	   load-plots.R       
 	   cpSample-class.R      
 	   cpPeaks-class.R       
 	   cpExperiment-class.R  
@@ -23,28 +22,20 @@ collate: chromatoplots-package.r
 	   canonical.R           
 	   onestep.R
 	   genProfile-pipes.R  
-	   genProfile-plots.R  
 	   removeBaseline-alg.R
 	   removeBaseline-pipes.R
-	   removeBaseline-plots.R
 	   findPeaks-alg.R       
 	   findPeaks-pipes.R   
-	   findPeaks-plots.R   
 	   findComps-alg.R       
 	   findComps-pipes.R     
-	   findComps-plots.R     
 	   groupComps-alg.R    
 	   groupComps-pipes.R  
-	   groupComps-plots.R  
 	   rtcor-alg.R
 	   rtcor-pipes.R
-	   rtcor-plots.R
 	   summarize-alg.R
 	   summarize-pipes.R
-	   summarize-plots.R
 	   normalize-alg.R     
 	   normalize-pipes.R
-	   normalize-plots.R
 	   fillPeaks-pipes.R     
 	   filtComps-alg.R       
 	   identify-pipes.R    
