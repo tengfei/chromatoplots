@@ -2,7 +2,6 @@ library(chromatoplots)
 cdfpath <- system.file('cdf',package='faahKO')
 cdffiles <- list.files(cdfpath,recursive=TRUE,full.names=TRUE)
 getOption('BioC')$commandr
-
 ## options(warn=0)
 ## Stage load sample
 raw1 <- loadSample(cdffiles[1])

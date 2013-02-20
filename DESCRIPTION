@@ -49,4 +49,3 @@ collate: chromatoplots-package.r
 	   gui.R
 	   postprocessing.R               
 	   zzz.R
-	   command-utils.R       
