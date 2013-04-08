@@ -35,7 +35,7 @@ raw <- cor_prof
 ## find some peaks using our gaussian-fitting method
 ## peaks <- findPeaks(raw, "gauss")
 ## find some peaks using our parabola-fitting method
-peaks <- findPeaks(raw, "parabola")
+peaks <- findPeaks(raw, "parabola") ## need to be fixed
 
 ## xcms has method like
 ## $findPeaks.methods

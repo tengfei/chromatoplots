@@ -2,7 +2,11 @@ import(xcms, commandr)
 ## IRanges)
 importClassesFrom(Biobase, ExpressionSet, AnnotatedDataFrame)
 importFrom(Biobase, copyEnv)
-importMethodsFrom(IRanges, Rle)
+
+
+importMethodsFrom(IRanges, Rle, runValue, width, Views, viewSums,
+                  findOverlaps)
+importFrom(IRanges, PartitioningByEnd, IRanges)
 
 ## just for now
 ## exportPattern("^[^\\.]")
@@ -18,7 +22,10 @@ exportMethods(loadSample, genProfile, loadExperiment,
               fillPeaks, normalize, summarize, removeBaseline)
 
 ## stuff from xcms
-export(findPeaks)
+export(findPeaks, findPeaks.pipeline)
+
+##
+export(LoadPeaksPipeline)
 
 ## pipeline stuff
 exportClasses("PipelineORlanguage", "ProtoFillPeaks",

@@ -130,15 +130,15 @@ components_to_assignments2 <- function(components, peaks, tolerance = 1) {
   ir <- IRanges((mu_peak - tolerance*sigma)*1000,
                 (mu_peak + tolerance*sigma)*1000)
   ## ol <- as.matrix(overlap(ir, as.integer(mu*1000)))
-  ol <- findOverlaps(as.integer(mu*1000),ir)@matchMatrix
+  ol <- findOverlaps(as.integer(mu*1000),ir)
   ## if comp contains peaks from same mz, only keep closest peak
-  mu_delta <- abs(mu_peak[ol[,2]] - mu[ol[,1]])
+  mu_delta <- abs(mu_peak[ol@subjectHits] - mu[ol@queryHits])
   ol <- ol[order(mu_delta),]
-  ol <- ol[!duplicated(data.frame(peaks[ol[,2],"mz"], ol[,1])),]
+  ol <- ol[!duplicated(data.frame(peaks[ol@subjectHits,"mz"], ol@queryHits)),]
   ## make sure each peak is only assigned to one component
-  ol <- ol[!duplicated(ol[,2]),]
-  comps <- peaks[,"comp"] + max(ol[,1])
-  comps[ol[,2]] <- components[ol[,1], "comp"]
+  ol <- ol[!duplicated(ol@subjectHits),]
+  comps <- peaks[,"comp"] + max(ol@queryHits)
+  comps[ol@subjectHits] <- components[ol@queryHits, "comp"]
   as.integer(factor(comps))
 }
 
@@ -162,6 +162,7 @@ components_to_assignments2 <- function(components, peaks, tolerance = 1) {
 
 ## 2X over initial version, but already fast
 assignments_to_components2 <- function(assignments, peaks) {
+  ## browser()
   sigma_ord <- order(peaks[,"sigma"])
   ord <- sigma_ord[order(assignments[sigma_ord], na.last = NA)]
   assign_f <- factor(assignments[ord])
@@ -173,7 +174,9 @@ assignments_to_components2 <- function(assignments, peaks) {
   ## refs <- viewWhichMaxs(views)
   sharp_ir <- IRanges(start(ir), w = assign_tab/4)
   ## reference is peak w/ first quartile sigma
-  refs <- start(ir) + assign_tab/4 
+  refs <- start(ir) + assign_tab/4
+  ## if(inherits(res, "try-error"))
+  ##   browser()
   views <- Views(Rle(peaks[,"rt"]), ir)
   rt_mean <- rep(viewSums(views)/assign_tab, assign_tab)
   views <- Views(Rle((peaks[,"rt"] - rt_mean)^2), ir)

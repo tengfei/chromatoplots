@@ -1,6 +1,6 @@
 Package: chromatoplots
 Title: Preprocessing of GC-MS metabolomics data with a GUI and interactive plots.
-Version: 0.0.8
+Version: 0.0.9
 Author: Michael Lawrence, Tengfei Yin, Heike Hofmann, Suh-yeon Choi, Dianne Cook
 Depends: methods, commandr
 Imports: Biobase, IRanges, xcms
