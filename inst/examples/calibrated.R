@@ -1,5 +1,5 @@
 library(chromatoplots)
-cdfdir <- "~/Datas/mets/suhyeon/exp"
+cdfdir <- "~/Documents/Data/raw/"
 cdffiles <- list.files(cdfdir,recursive=TRUE,full.names=TRUE)
 cdffiles
 ############################################################
@@ -15,25 +15,23 @@ cor_prof1 <- removeBaseline(raw_prof1, "median", scanrad = 100)
 peaks1 <- findPeaks(cor_prof1, "gauss")
 ## Step 5: Load Experiment
 setwd(cdfdir)
-## ci_exp <- loadExperiment(c("s1", "s2"))
+ci_exp <- loadExperiment(c("s1", "s2"))
 ## save(ci_exp,file="~/Datas/rdas/ci_exp.rda")
-library(chromatoplots)
-load("~/Datas/rdas/ci_exp.rda")
+
+## load("~/Datas/rdas/ci_exp.rda")
 ## Step 6: Find Components
 xset_comps <- findComps(ci_exp, "sigma")
+
+
 comps <- xset_comps@comps
-head(comps)
-comps[comps[,"comp"]==23,]
 pks <- xset_comps@peaks
 head(pks)
-by(pks,pks[,"sample"],function())
-
 pks <- as.data.frame(pks)
 inter <- interaction(pks[,"sample"],pks[,"comp"])
 pks$inter <- inter
 lst <- by(pks,pks$inter,function(obj){
   ## 50-800
-  mz.name <- paste("mz",50:800,sep="")
+    mz.name <- paste("mz",50:800,sep="")
   df <- t(data.frame(rep(0,length(50:800))))
   colnames(df) <-mz.name
   rownames(df) <- unique(obj$inter)
@@ -48,7 +46,7 @@ comps <- as.data.frame(xset_comps@comps)
 comps$id <- interaction(comps$sample,comps$comp)
 head(comps)
 mets <- merge(comps,df,by="id")
-dim(mets)
+head(mets)
 save(mets,file="~/Desktop/mets.csv")
 head(mets[,1:10])
 idx <- pks[,"comp"]==140
@@ -67,3 +65,35 @@ xset_groups2 <- groupComps(xset_rtcor, "angle", rt_window = 1)
 xset_sum <- summarize(xset_groups2, "common")
 ## Step 11: Normalize (by simple scaling)
 xset_norm <- normalize(xset_sum, "scale")
+
+## ======================================================================
+## new
+## ======================================================================
+cdfdir <- "~/Documents/Data/raw/"
+setwd(cdfdir)
+p <- Pipeline("loadExperiment", "findComps")
+xset_comps <- perform(p, cdfdir) ## perform pipeline with input
+
+comps <- xset_comps@comps
+pks <- xset_comps@peaks
+pks <- as.data.frame(pks)
+inter <- interaction(pks[,"sample"],pks[,"comp"])
+pks$inter <- inter
+lst <- by(pks,pks$inter,function(obj){
+  ## 50-800
+    mz.name <- paste("mz",50:800,sep="")
+  df <- t(data.frame(rep(0,length(50:800))))
+  colnames(df) <-mz.name
+  rownames(df) <- unique(obj$inter)
+  nms <- paste("mz",obj$mz,sep="")
+  df[,nms] <- obj$maxf
+  df
+})
+df <- do.call("rbind",lst)
+df <- as.data.frame(df)
+df$id <- rownames(df)
+comps <- as.data.frame(xset_comps@comps)
+comps$id <- interaction(comps$sample,comps$comp)
+mets <- merge(comps,df,by="id")
+mets2 = mets
+save(mets,file="~/Desktop/mets.csv")
